@@ -1,0 +1,38 @@
+pip install python-telegram-bot
+from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
+import logging
+
+# Вставьте свой токен бота здесь
+TOKEN = "YOUR_BOT_TOKEN"
+
+# Настройка журналирования
+logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
+
+# Инициализация бота
+updater = Updater(token=TOKEN, use_context=True)
+dispatcher = updater.dispatcher
+
+# Обработка команды /start
+def start(update, context):
+    context.bot.send_message(chat_id=update.effective_chat.id, text="Привет! Я бот поисковика. Просто отправь мне ключевые слова, и я поищу для тебя.")
+
+start_handler = CommandHandler('start', start)
+dispatcher.add_handler(start_handler)
+
+# Обработка текстовых сообщений
+def search(update, context):
+    query = update.message.text
+    # Ваш код поиска информации по ключевым словам
+    # Например, вы можете использовать API для поиска в интернете
+
+    # Вместо этого примера, просто отправим сообщение с найденной информацией
+    context.bot.send_message(chat_id=update.effective_chat.id, text=f"Результаты по запросу '{query}': Найдено много интересной информации!")
+
+search_handler = MessageHandler(Filters.text & ~Filters.command, search)
+dispatcher.add_handler(search_handler)
+
+# Запуск бота
+updater.start_polling()
+
+# Ожидание завершения работы бота
+updater.idle()
